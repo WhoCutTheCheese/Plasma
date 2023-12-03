@@ -1,0 +1,22 @@
+{
+  "name": "ooooh-its-a-secret",
+  "version": "1.0.0",
+  "description": "Unknown yet...",
+  "main": "Index.ts",
+  "scripts": {
+    "start": "npx tsc && node out/Index.js"
+  },
+  "author": "tehcheese",
+  "repository": "https://github.com/WhoCutTheCheese/Something-New",
+  "license": "ISC",
+  "overrides": {
+    "@vladfrangu/async_event_emitter": "2.2.2"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.2",
+    "typescript": "^5.3.2"
+  }
+}
