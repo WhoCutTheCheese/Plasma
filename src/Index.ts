@@ -26,6 +26,7 @@ export const client = new Client({
 	]
 });
 
+// Initializes the entire bot.
 initializeModules();
 
 // ERROR HANDLING

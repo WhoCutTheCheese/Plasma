@@ -6,7 +6,7 @@ export class ModuleBuilder {
 
 	constructor() {
 		this.#executor = function () {
-			throw new Error('Command executor unimplemented (call setModule before exporting commands)');
+			throw new Error('Module executor unimplemented (call setModule before exporting commands)');
 		};
 	}
 
