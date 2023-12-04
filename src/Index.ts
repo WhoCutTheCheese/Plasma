@@ -9,7 +9,7 @@ import { handleError } from "./utilities/HandleError";
 import mongoose from "mongoose";
 import path from "path";
 import { Log } from "./utilities/Logging";
-import { initializeModules } from "./ModuleHandler";
+import { initializeModules } from "./InitModules";
 
 export const client = new Client({
 	intents: [
@@ -27,7 +27,13 @@ export const client = new Client({
 });
 
 // Initializes the entire bot.
-initializeModules();
+async function run() {
+	await initializeModules().catch(async (err: Error) => await handleError(err, path.basename(__filename))).then(() => Log.info("Successfully initialized all modules."));
+	client.login(configVars.token);
+}
+
+run();
+
 
 // ERROR HANDLING
 process.on('unhandledRejection', async (err: Error) => await handleError(err, path.basename(__filename)));
@@ -35,5 +41,3 @@ process.on('uncaughtException', async (err: Error) => await handleError(err, pat
 client.on("error", async (err: Error) => await handleError(err, path.basename(__filename)));
 mongoose.connection.on("error", async (err: Error) => { await handleError(err, path.basename(__filename)); process.exit(500); });
 mongoose.connection.on("connected", async () => { Log.debug("Mongoose has connected successfully."); });
-
-client.login(configVars.token);
