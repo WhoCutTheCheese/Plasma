@@ -1,10 +1,10 @@
-import { Events } from 'discord.js';
+import { ChatInputCommandInteraction, ClientEvents, Events } from 'discord.js';
 import { promisify } from 'node:util';
 
 type Executor = (...args: any[]) => Promise<void> | void;
 export class EventsBuilder {
 	#executor: Executor;
-	#event: Events;
+	#event: string;
 	#once: boolean;
 
 	constructor() {
@@ -30,11 +30,16 @@ export class EventsBuilder {
 		return this;
 	}
 
-	execute(): Promise<unknown> {
-		return promisify(this.#executor)();
+	execute(...args: any[]): Promise<unknown> {
+		//@ts-ignore
+		return promisify(this.#executor)(...args);
 	}
 
-	event(): Events {
+	event(): string {
 		return this.#event;
+	}
+
+	once(): boolean {
+		return this.#once;
 	}
 }
