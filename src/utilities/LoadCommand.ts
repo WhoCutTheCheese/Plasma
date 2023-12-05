@@ -8,8 +8,10 @@ export async function loadCommand(client: Client, commandpath: string): Promise<
 
 		delete require.cache[require.resolve(commandpath)];
 
-		const name = option.name();
-		const aliases = option.aliases();
+		let {
+			aliases,
+			name
+		} = option.command_data();
 
 		client.legacyCommands.set(name.toLowerCase(), option);
 		client.legacyCommandFilepath.set(name.toLowerCase(), commandpath);

@@ -8,6 +8,21 @@ interface PermissionsResult extends MessageCreateOptions {
 	success: boolean;
 }
 
+interface CommandData {
+	name: string;
+	aliases: string[];
+	description: string;
+	minimum_args: number | undefined;
+	maximum_args: number | undefined;
+	expected_args: string | undefined;
+	cooldown: number | undefined;
+	base_permission: PermissionsBitField[];
+	bot_permission: PermissionsBitField[];
+	dev_only: boolean | undefined;
+	hidden: boolean | undefined;
+	executor: Executor;
+}
+
 export class CommandBuilder {
 	#name: string;
 	#aliases: string[];
@@ -16,8 +31,10 @@ export class CommandBuilder {
 	#maximum_args: number | undefined;
 	#expected_args: string | undefined;
 	#cooldown: number | undefined;
-	#base_permission: PermissionsBitField | undefined;
+	#base_permission: PermissionsBitField[];
+	#bot_permission: PermissionsBitField[];
 	#dev_only: boolean | undefined;
+	#hidden: boolean | undefined;
 	#executor: Executor;
 
 	constructor() {
@@ -27,6 +44,8 @@ export class CommandBuilder {
 		this.#description = "No descrition set... PLEASE YELL AT A DEV.";
 		this.#aliases = [];
 		this.#name = "None set, idiot";
+		this.#base_permission = [];
+		this.#bot_permission = [];
 	}
 
 	/**
@@ -69,8 +88,23 @@ export class CommandBuilder {
 		return this;
 	}
 
-	setBasePermission(perm: PermissionsBitField): CommandBuilder {
+	setBasePermission(perm: PermissionsBitField[]): CommandBuilder {
 		this.#base_permission = perm;
+		return this;
+	}
+
+	setBotPermission(perm: PermissionsBitField[]): CommandBuilder {
+		this.#bot_permission = perm;
+		return this;
+	}
+
+	setDevOnly(devOnly: boolean): CommandBuilder {
+		this.#dev_only = devOnly;
+		return this;
+	}
+
+	setHidden(hidden: boolean): CommandBuilder {
+		this.#hidden = hidden;
 		return this;
 	}
 
@@ -84,36 +118,21 @@ export class CommandBuilder {
 		return this;
 	}
 
-	name(): string {
-		return this.#name;
-	}
-
-	aliases(): string[] {
-		return this.#aliases;
-	}
-
-	description(): string {
-		return this.#description;
-	}
-
-	min_args(): number | undefined {
-		return this.#minimum_args;
-	}
-
-	max_args(): number | undefined {
-		return this.#maximum_args;
-	}
-
-	expected_args(): string | undefined {
-		return this.#expected_args;
-	}
-
-	cooldown(): number | undefined {
-		return this.#cooldown;
-	}
-
-	base_perm(): PermissionsBitField | undefined {
-		return this.#base_permission;
+	command_data(): CommandData {
+		return {
+			name: this.#name,
+			aliases: this.#aliases,
+			description: this.#description,
+			minimum_args: this.#minimum_args,
+			maximum_args: this.#maximum_args,
+			expected_args: this.#expected_args,
+			cooldown: this.#cooldown,
+			base_permission: this.#base_permission,
+			bot_permission: this.#bot_permission,
+			dev_only: this.#dev_only,
+			hidden: this.#hidden,
+			executor: this.#executor,
+		};
 	}
 
 	/** Runs the current {@link Executor}. */

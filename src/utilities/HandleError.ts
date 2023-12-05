@@ -46,7 +46,7 @@ export async function handleError(err: Error, file: string, interaction?: Intera
 		.setTimestamp()
 		.setFooter({ text: "Error caught at", iconURL: supportServer.iconURL() || undefined });
 	errorWebhook.send({ embeds: [errorEmbed] });
-	Log.error(`An error occurred in ${file}\n\n${err}`);
+	Log.error(`An error occurred in ${file}\n\n${err.stack}`);
 
 	await errorWebhook.delete();
 }

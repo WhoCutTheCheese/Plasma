@@ -1,11 +1,11 @@
 {
 	"supportServerID": "967406327410339891",
-	"passedEmoji": "",
-	"deniedEmoji": "",
-	"warnedEmoji": "",
-	"loadingEmoji": "",
-	"bulletPoint": "",
-	"arrowRight": "",
+	"passedEmoji": "<:check:1172614038769909920>",
+	"deniedEmoji": "<:denied:1172614051499606066>",
+	"warnedEmoji": "<:warn:1176797891986214922>",
+	"loadingEmoji": "<a:Loading:1172614075054837830>",
+	"bulletPoint": "<:blurple_bulletpoint:1172614026543501382>",
+	"arrowRight": "<:arrow:1172614063176552599>",
 	"devs": [
 		"493453098199547905"
 	]
