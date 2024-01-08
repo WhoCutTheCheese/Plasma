@@ -3,6 +3,7 @@ import { configVars } from "../../utilities/Config";
 import GuildSettings from "../../schemas/GuildSettings";
 import { ColorResolvable, EmbedBuilder } from "discord.js";
 import { formatUptime, getMaxRAM, getUsedRAM } from "../../utilities/ClientInfoUtilities";
+import { getSettings } from "../../utilities/Settings";
 
 export default new CommandBuilder()
 	.setName("ping")
@@ -12,6 +13,10 @@ export default new CommandBuilder()
 	.setMaxArgs(0)
 	.setMinArgs(0)
 	.setExecutor(async (client, message, args) => {
+		if (!message.guild) {
+			message.channel.send({ content: "Unable to find a valid guild." });
+			return;
+		}
 		const pingMessage = await message.channel.send({ content: `${configVars.loadingEmoji} Calculating...` });
 		const ping = pingMessage.createdTimestamp - message.createdTimestamp;
 		const uptime = formatUptime(client.readyAt);
@@ -25,9 +30,7 @@ export default new CommandBuilder()
 			pingMoji = "<:mediumping:1181657516845838376>";
 		}
 
-		let settings = await GuildSettings.findOne({
-			guildID: message.guild!.id,
-		});
+		let settings = await getSettings(message.guild);
 		if (!settings) return;
 
 		const pingEmbed = new EmbedBuilder()
