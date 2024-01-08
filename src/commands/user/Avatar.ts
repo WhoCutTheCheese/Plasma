@@ -3,6 +3,7 @@ import { configVars } from "../../utilities/Config";
 import GuildSettings from "../../schemas/GuildSettings";
 import { ColorResolvable, EmbedBuilder } from "discord.js";
 import { formatUptime, getMaxRAM, getUsedRAM } from "../../utilities/ClientInfoUtilities";
+import { getSettings } from "../../utilities/Settings";
 
 export default new CommandBuilder()
 	.setName("avatar")
@@ -13,12 +14,13 @@ export default new CommandBuilder()
 	.setMaxArgs(1)
 	.setMinArgs(0)
 	.setExecutor(async (client, message, args) => {
-		const user = message.mentions.users.first() || await client.users.fetch(args[0]) || message.author;
+		if (!message.guild) {
+			message.channel.send({ content: "Unable to find a valid guild." });
+			return;
+		} const user = message.mentions.users.first() || await client.users.fetch(args[0]).catch(() => { return null; }) || message.author;
 		const msg = await message.channel.send({ content: `${configVars.loadingEmoji} Fetching that avatar...` });
 
-		let settings = await GuildSettings.findOne({
-			guildID: message.guild!.id,
-		});
+		let settings = await getSettings(message.guild);
 		if (!settings) return;
 
 		let avatarEmbed = new EmbedBuilder()

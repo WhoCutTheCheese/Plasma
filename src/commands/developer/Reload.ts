@@ -5,6 +5,7 @@ import { ColorResolvable, EmbedBuilder, EmbedType } from "discord.js";
 import { formatUptime, getMaxRAM, getUsedRAM } from "../../utilities/ClientInfoUtilities";
 import { loadCommand } from "../../utilities/LoadCommand";
 import { Log } from "../../utilities/Logging";
+import { getSettings } from "../../utilities/Settings";
 
 export default new CommandBuilder()
 	.setName("reload")
@@ -17,9 +18,11 @@ export default new CommandBuilder()
 	.setExpectedArgs("[Command/Alias]")
 	.setHidden(true)
 	.setExecutor(async (client, message, args) => {
-		let settings = await GuildSettings.findOne({
-			guildID: message.guild!.id,
-		});
+		if (!message.guild) {
+			message.channel.send({ content: "Unable to find a valid guild." });
+			return;
+		}
+		let settings = await getSettings(message.guild);
 		if (!settings) return;
 
 		if (args.length === 0) {
