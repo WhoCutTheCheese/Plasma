@@ -13,7 +13,7 @@ export default new CommandBuilder()
 	.setMaxArgs(1)
 	.setMinArgs(0)
 	.setExecutor(async (client, message, args) => {
-		const user = message.mentions.users.first() || await client.users.fetch(args[0]) || message.author;
+		const user = message.mentions.users.first() || await client.users.fetch(args[0]).catch(() => { return null; }) || message.author;
 		const msg = await message.channel.send({ content: `${configVars.loadingEmoji} Fetching that avatar...` });
 
 		let settings = await GuildSettings.findOne({
