@@ -9,6 +9,7 @@ const schema = new Schema({
 		type: String,
 		required: true
 	},
+	invitedBy: String,
 	messages: Number,
 	level: Number,
 	exp: Number,
