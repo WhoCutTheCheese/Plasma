@@ -3,7 +3,7 @@
  */
 
 // IMPORTS
-import { Client, GatewayIntentBits, Partials } from "discord.js";
+import { Client, Events, GatewayIntentBits, Partials } from "discord.js";
 import { configVars } from "./utilities/Config";
 import { handleError } from "./utilities/HandleError";
 import mongoose from "mongoose";
@@ -33,7 +33,6 @@ async function run() {
 }
 
 run();
-
 
 // ERROR HANDLING
 process.on('unhandledRejection', async (err: Error) => await handleError(err, path.basename(__filename)));

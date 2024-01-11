@@ -1,11 +1,10 @@
 import { CommandBuilder } from "../../structures/CommandClass";
 import { configVars } from "../../utilities/Config";
-import GuildSettings from "../../schemas/GuildSettings";
-import { ColorResolvable, EmbedBuilder, EmbedType } from "discord.js";
-import { formatUptime, getMaxRAM, getUsedRAM } from "../../utilities/ClientInfoUtilities";
+import { EmbedBuilder } from "discord.js";
 import { loadCommand } from "../../utilities/LoadCommand";
 import { Log } from "../../utilities/Logging";
 import { getSettings } from "../../utilities/Settings";
+import { errorEmbed } from "../../utilities/Embeds";
 
 export default new CommandBuilder()
 	.setName("reload")
@@ -19,26 +18,20 @@ export default new CommandBuilder()
 	.setHidden(true)
 	.setExecutor(async (client, message, args) => {
 		if (!message.guild) {
-			message.channel.send({ content: "Unable to find a valid guild." });
+			message.channel.send({ embeds: [errorEmbed("Unable to find valid guild.", true)] });
 			return;
 		}
 		let settings = await getSettings(message.guild);
 		if (!settings) return;
 
 		if (args.length === 0) {
-			const invalidSyntax = new EmbedBuilder()
-				.setDescription(`${configVars.deniedEmoji} Invalid syntax! Use \`${settings.prefix}\`reload [Command/Alias]`)
-				.setColor("Red");
-			message.channel.send({ embeds: [invalidSyntax] });
+			message.channel.send({ embeds: [errorEmbed(`Invalid syntax! Use \`${settings.prefix} reload [Command/Alias]\``)] });
 		}
 
 		const commandName = args[0].trim().toLowerCase();
 		let commandpath = client.legacyCommandFilepath.get(commandName)! || client.legacyCommandFilepath.get(client.legacyCommandAlias.get(commandName)!)!;
 		if (!commandpath) {
-			const invalidSyntax = new EmbedBuilder()
-				.setDescription(`${configVars.deniedEmoji} Unknown command!`)
-				.setColor("Red");
-			message.channel.send({ embeds: [invalidSyntax] });
+			message.channel.send({ embeds: [errorEmbed("Unknown command!")] });
 		}
 
 		let command = client.legacyCommands.get(commandName)! || client.legacyCommands.get(client.legacyCommandAlias.get(commandName)!)!;

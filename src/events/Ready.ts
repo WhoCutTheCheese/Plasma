@@ -17,5 +17,4 @@ export default new EventsBuilder()
 		mongoose.connect(configVars.mongoURI!);
 
 		Log.info("This secret bot is online.");
-		return;
 	});
