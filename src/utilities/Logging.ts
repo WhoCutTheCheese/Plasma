@@ -1,4 +1,5 @@
 import "colors";
+import { configVars } from "./Config";
 
 /**
  * The severity of a log entry.
@@ -71,6 +72,7 @@ function rawLog(level: number, message: string): void {
 	}
 
 	message = `${timeStringNow()} | ${levelString.padEnd(9)} | ${message}`;
+	if (level === LogLevel.Debug && configVars.debug !== true) return;
 	console.log(message);
 
 }

@@ -6,6 +6,7 @@
 	"loadingEmoji": "<a:loading:1448535750881710120>",
 	"bulletPoint": "<:blurple_bulletpoint:1172614026543501382>",
 	"arrowRight": "<:arrow:1448535755768201327>",
+	"debug": true,
 	"devs": [
 		"493453098199547905",
 		"967312614315155456"

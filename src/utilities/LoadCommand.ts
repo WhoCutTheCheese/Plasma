@@ -17,9 +17,9 @@ export async function loadCommand(client: Client, commandpath: string): Promise<
 		client.legacyCommandFilepath.set(name.toLowerCase(), commandpath);
 
 		if (aliases) {
+			Log.debug(`[Alias]  | Command Alias | ${aliases.join(", ")}`);
 			for (const alias of aliases) {
 				client.legacyCommandAlias.set(alias.toLowerCase(), name.toLowerCase());
-				Log.info(`[Alias]  | Command Alias | ${alias}`);
 			}
 		}
 

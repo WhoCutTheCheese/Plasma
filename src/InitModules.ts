@@ -7,6 +7,6 @@ import path from "path";
 
 export async function initializeModules(): Promise<void> {
 	loadEvents().then(() => { Log.info("Events loaded."); }).catch((err: Error) => { handleError(err, path.basename(__filename)); });
-	loadCommands().then(() => { Log.info("Events loaded."); }).catch((err: Error) => { handleError(err, path.basename(__filename)); });
+	loadCommands().then(() => { Log.info("Legacy commands loaded."); }).catch((err: Error) => { handleError(err, path.basename(__filename)); });
 	loadMongoose().catch((err: Error) => { handleError(err, path.basename(__filename)); });
 }

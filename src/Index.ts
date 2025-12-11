@@ -65,4 +65,4 @@ process.on('unhandledRejection', async (err: Error) => await handleError(err, pa
 process.on('uncaughtException', async (err: Error) => await handleError(err, path.basename(__filename)));
 client.on("error", async (err: Error) => await handleError(err, path.basename(__filename)));
 mongoose.connection.on("error", async (err: Error) => { await handleError(err, path.basename(__filename)); process.exit(500); });
-mongoose.connection.on("connected", async () => { Log.debug("Mongoose has connected successfully."); });
+mongoose.connection.on("connected", async () => { Log.info("Mongoose has connected successfully."); });

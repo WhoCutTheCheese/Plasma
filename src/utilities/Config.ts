@@ -10,6 +10,7 @@ interface ConfigType {
 	loadingEmoji: string;
 	bulletPoint: string;
 	arrowRight: string;
+	debug: boolean;
 	devs: string[];
 	mongoURI?: string;
 	token?: string;

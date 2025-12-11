@@ -25,9 +25,9 @@ export async function load() {
 			if (stat.isDirectory()) {
 				readCommands(path.join(dir, file));
 			} else {
-				Log.info(`[Loading] | Legacy Command | ${file}`);
+				Log.debug(`[Loading] | Legacy Command | ${file}`);
 				let loaded = await loadCommand(client, path.join(__dirname, dir, file));
-				if (loaded) Log.info(`[Loaded]  | Legacy Command | ${file}`);
+				if (loaded) Log.debug(`[Loaded]  | Legacy Command | ${file}`);
 				else Log.error(`There was an error loading ${file}`);
 			}
 		}
