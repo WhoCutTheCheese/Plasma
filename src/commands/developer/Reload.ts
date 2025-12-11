@@ -1,6 +1,6 @@
 import { CommandBuilder } from "../../structures/CommandClass";
 import { configVars } from "../../utilities/Config";
-import { EmbedBuilder } from "discord.js";
+import { ChannelType, EmbedBuilder } from "discord.js";
 import { loadCommand } from "../../utilities/LoadCommand";
 import { Log } from "../../utilities/Logging";
 import { getSettings } from "../../utilities/Settings";
@@ -17,8 +17,8 @@ export default new CommandBuilder()
 	.setExpectedArgs("[Command/Alias]")
 	.setHidden(true)
 	.setExecutor(async (client, message, args) => {
-		if (!message.guild) {
-			message.channel.send({ embeds: [errorEmbed("Unable to find valid guild.", true)] });
+		if (!message.guild || message.channel.type !== ChannelType.GuildText) {
+			message.reply({ embeds: [errorEmbed("Unable to find valid guild.", true)] });
 			return;
 		}
 		let settings = await getSettings(message.guild);
