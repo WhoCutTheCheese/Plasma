@@ -1,4 +1,4 @@
-import { Collection, ColorResolvable, EmbedBuilder, Events, Message, PermissionsBitField, TextChannel } from "discord.js";
+import { ChannelType, Collection, ColorResolvable, EmbedBuilder, Events, Message, PermissionsBitField, TextChannel } from "discord.js";
 import { CommandBuilder } from "../structures/CommandClass";
 import { configVars } from "../utilities/Config";
 import { client } from "../Index";
@@ -8,6 +8,7 @@ import GuildSettings from "../schemas/GuildSettings";
 import Maintenance from "../schemas/Maintenance";
 import { handleError } from "../utilities/HandleError";
 import path from "path";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 declare module "discord.js" {
 	export interface Client {
@@ -25,6 +26,7 @@ export default new EventsBuilder()
 	.setExecutor(async (message: Message) => {
 		try {
 			if (!message.inGuild) return;
+			if (message.channel.type !== ChannelType.GuildText) return;
 			if (!message.guild?.members.me?.permissions.has([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.EmbedLinks])) return;
 			if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.EmbedLinks])) return;
 

@@ -1,7 +1,7 @@
 import { CommandBuilder } from "../../structures/CommandClass";
 import { configVars } from "../../utilities/Config";
 import GuildSettings from "../../schemas/GuildSettings";
-import { ColorResolvable, EmbedBuilder } from "discord.js";
+import { ChannelType, ColorResolvable, EmbedBuilder } from "discord.js";
 import { formatUptime, getMaxRAM, getUsedRAM } from "../../utilities/ClientInfoUtilities";
 import { getSettings } from "../../utilities/Settings";
 import { errorEmbed } from "../../utilities/Embeds";
@@ -14,21 +14,21 @@ export default new CommandBuilder()
 	.setMaxArgs(0)
 	.setMinArgs(0)
 	.setExecutor(async (client, message, args) => {
-		if (!message.guild) {
-			message.channel.send({ embeds: [errorEmbed("Unable to find valid guild.", true)] });
+		if (!message.guild || message.channel.type !== ChannelType.GuildText) {
+			message.reply({ embeds: [errorEmbed("Unable to find valid guild.", true)] });
 			return;
 		}
 		const pingMessage = await message.channel.send({ content: `${configVars.loadingEmoji} Calculating...` });
 		const ping = pingMessage.createdTimestamp - message.createdTimestamp;
 		const uptime = formatUptime(client.readyAt);
 
-		let pingMoji = "<:lowping:1181657537028829304>";
+		let pingMoji = "<:lowping:1448536363119935620>";
 		const averagePing = (ping + client.ws.ping) / 2;
 
 		if (averagePing > 250) {
-			pingMoji = "<:highping:1181657499162648727>";
+			pingMoji = "<:highping:1448536364487282729>";
 		} else if (averagePing > 150) {
-			pingMoji = "<:mediumping:1181657516845838376>";
+			pingMoji = "<:medping:1448536365850558665>";
 		}
 
 		let settings = await getSettings(message.guild);

@@ -3,7 +3,7 @@
  */
 
 // IMPORTS
-import { Client, Events, GatewayIntentBits, Partials } from "discord.js";
+import { Client, Events, GatewayIntentBits, Options, Partials, Sweepers } from "discord.js";
 import { configVars } from "./utilities/Config";
 import { handleError } from "./utilities/HandleError";
 import mongoose from "mongoose";
@@ -13,24 +13,50 @@ import { initializeModules } from "./InitModules";
 
 export const client = new Client({
 	intents: [
-		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildModeration,
 		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildInvites,
 	],
-	partials: [
-		Partials.Message,
-	]
+	//shards: getInfo().SHARD_LIST,
+	//shardCount: getInfo().TOTAL_SHARDS,
+	makeCache: Options.cacheWithLimits({
+		...Options.DefaultMakeCacheSettings,
+		ReactionManager: 0,
+		GuildStickerManager: 0,
+		GuildBanManager: 0,
+		GuildInviteManager: 0,
+		GuildScheduledEventManager: 0,
+		GuildMemberManager: {
+			maxSize: 200,
+			keepOverLimit: (member) => member.id === member.client.user.id,
+		},
+	}),
+	sweepers: {
+		messages: {
+			interval: 1800,
+			filter: Sweepers.filterByLifetime({
+				lifetime: 900,
+				excludeFromSweep: message => message.pinned,
+			}),
+		},
+		users: {
+			interval: 1800,
+			filter: Sweepers.filterByLifetime({ lifetime: 1800, excludeFromSweep: user => user.id == user.client.user.id }),
+		},
+		guildMembers: {
+			interval: 1800,
+			filter: Sweepers.filterByLifetime({ lifetime: 1800 }),
+		},
+	},
 });
 
 // Initializes the entire bot.
 async function run() {
 	await initializeModules().catch(async (err: Error) => await handleError(err, path.basename(__filename))).then(() => Log.info("Successfully initialized all modules."));
-	client.login(configVars.token);
 }
+client.login(configVars.token);
 
 run();
 

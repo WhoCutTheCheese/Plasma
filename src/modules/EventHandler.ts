@@ -2,7 +2,6 @@ import path from "path";
 import fs from "fs";
 import { client } from "../Index";
 import { EventsBuilder } from "../structures/EventClass";
-import { EmbedBuilder } from "discord.js";
 
 export async function load(): Promise<void> {
 	const eventPath = path.join(__dirname, "..", "events");
