@@ -27,10 +27,12 @@ const schema = new Schema({
 		countingBanRoles: Array,
 	},
 	inviteTracking: {
-		// Toggle
+		// Toggles
 		enabled: Boolean,
+		disableAlerts: Boolean,
 		// Settings
 		inviteBanRoles: Array,
+		inviteLogChannel: String,
 	},
 
 });

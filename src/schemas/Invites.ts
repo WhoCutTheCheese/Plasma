@@ -5,10 +5,6 @@ const schema = new Schema({
 		type: String,
 		required: true
 	},
-	guildID: {
-		type: String,
-		required: true
-	},
 	inviteCode: {
 		type: String,
 		required: true,
