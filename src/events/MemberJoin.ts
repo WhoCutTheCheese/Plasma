@@ -22,26 +22,25 @@ export default new EventsBuilder()
 
 		const invites = await member.guild.invites.fetch();
 		let foundInviter: User | undefined;
+		let deletable = true;
 
 		for (const singleInvite of invites) {
 			const invite = singleInvite[1];
 			let inviteFile = await Invites.findOne({
 				inviteCode: invite.code
 			});
+
+			if (!invite.deletable) deletable = false;
+
 			if (!inviteFile) {
-				const channel = await member.guild.channels.fetch(settings.inviteTracking?.inviteLogChannel!) as TextChannel;
-				if (channel) {
-					channel.send(`${configVars.warnedEmoji} Warning! <@${member.user.id}> joined with an unknown invite! Please run \`${settings.prefix}import\` to import existing invites!
-					If you wish to disable these alerts, use \`${settings.prefix}invitealerts false\``);
-				}
-				const newInvite = new Invites({
+				inviteFile = new Invites({
 					userID: invite.inviter?.id,
 					inviteCode: invite.code,
 					uses: invite.uses
 				});
-				newInvite.save().catch((err: Error) => handleError(err, "MemberJoin.ts"));
-				return;
+				inviteFile.save().catch((err: Error) => handleError(err, "MemberJoin.ts"));
 			}
+
 			if (inviteFile?.uses! < invite.uses!) {
 				foundInviter = await client.users.fetch(inviteFile?.userID!) || undefined;
 				await inviteFile?.updateOne({
@@ -51,14 +50,20 @@ export default new EventsBuilder()
 			}
 		}
 		if (!foundInviter) {
+			let invitedBy = "Unknown";
+			let message = `<@${member.user.id}> has joined the server! Invited by: **Unknown**\n-# *Psst... This was probably due to an unknown invite, run \`${settings.prefix}import\`!*`;
+			if (!deletable) {
+				invitedBy = "Vanity URL";
+				message = `<@${member.user.id}> has joined the server! Invited by: **Vanity URL**`;
+			}
 			await userData.updateOne({
 				guildID: member.guild.id,
 				userID: member.user.id,
-				invitedBy: "Unknown"
+				invitedBy: invitedBy
 			});
 			const channel = await member.guild.channels.fetch(settings.inviteTracking?.inviteLogChannel!) as TextChannel;
 			if (channel) {
-				channel.send(`<@${member.user.id}> has joined the server! Invited by: **Unknown**`);
+				channel.send({ content: message }).catch();
 			}
 			return;
 		};

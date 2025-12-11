@@ -88,14 +88,17 @@ export class CommandBuilder {
 		return this;
 	}
 
-	setBasePermission(perm: PermissionsBitField[]): CommandBuilder {
-		this.#base_permission = perm;
+	setBasePermission(perm: bigint[]): CommandBuilder {
+		for (let p of perm) {
+			this.#base_permission.push(new PermissionsBitField(p));
+		}
 		return this;
 	}
 
-	setBotPermission(perm: PermissionsBitField[]): CommandBuilder {
-		this.#bot_permission = perm;
-		return this;
+	setBotPermission(perm: bigint[]): CommandBuilder {
+		for (let p of perm) {
+			this.#bot_permission.push(new PermissionsBitField(p));
+		} return this;
 	}
 
 	setDevOnly(devOnly: boolean): CommandBuilder {

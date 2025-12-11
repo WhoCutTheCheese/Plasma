@@ -8,6 +8,6 @@ export default new EventsBuilder()
 	.setOnce(false)
 	.setExecutor(async (invite: Invite) => {
 		await Invites.deleteOne({
-			code: invite.code
+			inviteCode: invite.code
 		});
 	});
