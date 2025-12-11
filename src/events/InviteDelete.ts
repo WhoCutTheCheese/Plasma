@@ -10,4 +10,5 @@ export default new EventsBuilder()
 		await Invites.deleteOne({
 			inviteCode: invite.code
 		});
+
 	});
