@@ -4,11 +4,12 @@ import { configVars } from "../utilities/Config";
 import { client } from "../Index";
 import { EventsBuilder } from "../structures/EventClass";
 import { Log } from "../utilities/Logging";
-import GuildSettings from "../schemas/GuildSettings";
+import GuildSettings, { IGuildSettings } from "../schemas/GuildSettings";
 import Maintenance from "../schemas/Maintenance";
 import { handleError } from "../utilities/HandleError";
 import path from "path";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
+import { HydratedDocument } from "mongoose";
 
 declare module "discord.js" {
 	export interface Client {
@@ -30,7 +31,7 @@ export default new EventsBuilder()
 			if (!message.guild?.members.me?.permissions.has([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.EmbedLinks])) return;
 			if (!(message.channel as TextChannel).permissionsFor(message.guild?.members.me!)?.has([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.EmbedLinks])) return;
 
-			let settings = await GuildSettings.findOne({
+			let settings: HydratedDocument<IGuildSettings> | null = await GuildSettings.findOne({
 				guildID: message.guild.id,
 			});
 			if (!settings) {
@@ -42,7 +43,6 @@ export default new EventsBuilder()
 
 			const args = message.content.split(/[ ]+/);
 			const name = args.shift()!.toLowerCase();
-
 			const prefix = settings.prefix || ".";
 
 
@@ -174,7 +174,7 @@ export default new EventsBuilder()
 				}
 			}
 
-			command.execute(client, message, args);
+			command.execute(client, message, args, settings);
 
 
 		} catch (err) {

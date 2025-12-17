@@ -1,12 +1,8 @@
 import { CommandBuilder } from "../../structures/CommandClass";
 import { configVars } from "../../utilities/Config";
-import GuildSettings from "../../schemas/GuildSettings";
 import { ChannelType, ColorResolvable, EmbedBuilder, PermissionsBitField } from "discord.js";
-import { formatUptime, getMaxRAM, getUsedRAM } from "../../utilities/ClientInfoUtilities";
-import { getSettings } from "../../utilities/Settings";
 import { errorEmbed } from "../../utilities/Embeds";
 import Invites from "../../schemas/Invites";
-import { Log } from "../../utilities/Logging";
 import { handleError } from "../../utilities/HandleError";
 
 export default new CommandBuilder()

@@ -1,9 +1,7 @@
 import { CommandBuilder } from "../../structures/CommandClass";
 import { configVars } from "../../utilities/Config";
-import GuildSettings from "../../schemas/GuildSettings";
 import { ChannelType, ColorResolvable, EmbedBuilder } from "discord.js";
 import { formatUptime, getMaxRAM, getUsedRAM } from "../../utilities/ClientInfoUtilities";
-import { getSettings } from "../../utilities/Settings";
 import { errorEmbed } from "../../utilities/Embeds";
 
 export default new CommandBuilder()
@@ -13,7 +11,7 @@ export default new CommandBuilder()
 	.setCooldown(3)
 	.setMaxArgs(0)
 	.setMinArgs(0)
-	.setExecutor(async (client, message, args) => {
+	.setExecutor(async (client, message, args, settings) => {
 		if (!message.guild || message.channel.type !== ChannelType.GuildText) {
 			message.reply({ embeds: [errorEmbed("Unable to find valid guild.", true)] });
 			return;
@@ -29,12 +27,6 @@ export default new CommandBuilder()
 			pingMoji = "<:highping:1448536364487282729>";
 		} else if (averagePing > 150) {
 			pingMoji = "<:medping:1448536365850558665>";
-		}
-
-		let settings = await getSettings(message.guild);
-		if (!settings) {
-			message.channel.send({ embeds: [errorEmbed("Unable to find guild settings.", true)] });
-			return;
 		}
 
 		const pingEmbed = new EmbedBuilder()

@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, GuildMember } from "discord.js";
+import { ChannelType, ColorResolvable, EmbedBuilder, GuildMember } from "discord.js";
 import { CommandBuilder } from "../../structures/CommandClass";
 import { configVars } from "../../utilities/Config";
 import { errorEmbed } from "../../utilities/Embeds";
@@ -10,11 +10,12 @@ export default new CommandBuilder()
 	.setCooldown(3)
 	.setMaxArgs(1)
 	.setMinArgs(0)
-	.setExecutor(async (client, message, args) => {
+	.setExecutor(async (client, message, args, settings) => {
 		if (!message.guild || message.channel.type !== ChannelType.GuildText) {
 			message.reply({ embeds: [errorEmbed("Unable to find valid guild.", true)] });
 			return;
 		}
+
 		const user = message.mentions.users.first() || await client.users.fetch(args[0]).catch(() => { return null; }) || message.author;
 		const msg = await message.channel.send({ content: `${configVars.loadingEmoji} Fetching user information...` });
 		let member: GuildMember | undefined;
@@ -59,7 +60,7 @@ export default new CommandBuilder()
 		let userInfoEmbed = new EmbedBuilder()
 			.setAuthor({ name: `Who is ${user.tag}`, iconURL: user.displayAvatarURL() || undefined })
 			.setThumbnail(user.displayAvatarURL() || null)
-			.setColor("Random")
+			.setColor(settings.embedColor as ColorResolvable || "Random")
 			.addFields(
 				{ name: "Name:", value: `${user.tag}`, inline: true },
 				{ name: "Badges:", value: `${badges}`, inline: true },

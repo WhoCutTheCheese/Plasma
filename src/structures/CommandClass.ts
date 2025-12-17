@@ -1,7 +1,9 @@
 import { Client, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
+import { HydratedDocument } from "mongoose";
 import { promisify } from "node:util";
+import { IGuildSettings } from "../schemas/GuildSettings";
 
-type Executor = (client: Client, message: Message, args: string[]) => Promise<void> | void;
+type Executor = (client: Client, message: Message, args: string[], guildSettings: HydratedDocument<IGuildSettings>) => Promise<void> | void;
 
 /** The results of checking user permissions. */
 interface PermissionsResult extends MessageCreateOptions {
@@ -139,7 +141,7 @@ export class CommandBuilder {
 	}
 
 	/** Runs the current {@link Executor}. */
-	execute(client: Client, message: Message, args: string[]): Promise<unknown> {
-		return promisify(this.#executor)(client, message, args);
+	execute(client: Client, message: Message, args: string[], guildSettings: HydratedDocument<IGuildSettings>): Promise<unknown> {
+		return promisify(this.#executor)(client, message, args, guildSettings);
 	}
 }

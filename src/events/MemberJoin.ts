@@ -1,12 +1,10 @@
-import { Collection, Events, Guild, GuildMember, Invite, TextChannel, User } from "discord.js";
+import { Events, GuildMember, TextChannel, User } from "discord.js";
 import { EventsBuilder } from "../structures/EventClass";
-import GuildSettings from "../schemas/GuildSettings";
 import UserData from "../schemas/UserData";
 import { handleError } from "../utilities/HandleError";
 import Invites from "../schemas/Invites";
 import { client } from "../Index";
 import { getSettings } from "../utilities/Settings";
-import { configVars } from "../utilities/Config";
 
 export default new EventsBuilder()
 	.setEvent(Events.GuildMemberAdd)

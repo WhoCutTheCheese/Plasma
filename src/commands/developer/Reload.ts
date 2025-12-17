@@ -3,7 +3,6 @@ import { configVars } from "../../utilities/Config";
 import { ChannelType, EmbedBuilder } from "discord.js";
 import { loadCommand } from "../../utilities/LoadCommand";
 import { Log } from "../../utilities/Logging";
-import { getSettings } from "../../utilities/Settings";
 import { errorEmbed } from "../../utilities/Embeds";
 
 export default new CommandBuilder()
@@ -16,13 +15,11 @@ export default new CommandBuilder()
 	.setDevOnly(true)
 	.setExpectedArgs("[Command/Alias]")
 	.setHidden(true)
-	.setExecutor(async (client, message, args) => {
+	.setExecutor(async (client, message, args, settings) => {
 		if (!message.guild || message.channel.type !== ChannelType.GuildText) {
 			message.reply({ embeds: [errorEmbed("Unable to find valid guild.", true)] });
 			return;
 		}
-		let settings = await getSettings(message.guild);
-		if (!settings) return;
 
 		if (args.length === 0) {
 			message.channel.send({ embeds: [errorEmbed(`Invalid syntax! Use \`${settings.prefix} reload [Command/Alias]\``)] });
