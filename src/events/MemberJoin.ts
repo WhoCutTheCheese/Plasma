@@ -5,6 +5,7 @@ import { handleError } from "../utilities/HandleError";
 import Invites from "../schemas/Invites";
 import { client } from "../Index";
 import { getSettings } from "../utilities/Settings";
+import { getRealInvites } from "../utilities/User";
 
 export default new EventsBuilder()
 	.setEvent(Events.GuildMemberAdd)
@@ -19,7 +20,8 @@ export default new EventsBuilder()
 		userData.save().catch((err: Error) => handleError(err, "MemberJoin.ts"));
 
 		const invites = await member.guild.invites.fetch();
-		let foundInviter: User | undefined;
+		let foundInviter: GuildMember | undefined;
+		let inviterID: string | undefined;
 		let deletable = true;
 
 		for (const singleInvite of invites) {
@@ -40,16 +42,23 @@ export default new EventsBuilder()
 			}
 
 			if (inviteFile?.uses! < invite.uses!) {
-				foundInviter = await client.users.fetch(inviteFile?.userID!) || undefined;
+				foundInviter = await member.guild.members.fetch(inviteFile?.userID!) || undefined;
+				inviterID = inviteFile?.userID!;
 				await inviteFile?.updateOne({
 					uses: invite.uses
 				});
-				break;
+
 			}
+			break;
 		}
+
 		if (!foundInviter) {
 			let invitedBy = "Unknown";
 			let message = `<@${member.user.id}> has joined the server! Invited by: **Unknown**\n-# *Psst... This was probably due to an unknown invite, run \`${settings.prefix}import\`!*`;
+			const externalInviter = await client.users.fetch(inviterID!).catch(() => null)
+			if (externalInviter) {
+				message = `<@${member.user.id}> has joined the server! Invited by: **${externalInviter.username}**`;
+			}
 			if (!deletable) {
 				invitedBy = "Vanity URL";
 				message = `<@${member.user.id}> has joined the server! Invited by: **Vanity URL**`;
@@ -63,9 +72,8 @@ export default new EventsBuilder()
 			if (channel) {
 				channel.send({ content: message }).catch();
 			}
-			return;
-		};
-
+			return
+		}
 		let inviterUserData = await UserData.findOne({
 			guildID: member.guild.id,
 			userID: foundInviter.id
@@ -77,7 +85,6 @@ export default new EventsBuilder()
 			});
 			inviterUserData.save();
 		}
-		let invitesNum = inviterUserData.invites?.real || 0;
 		if (Date.now() - member.user.createdAt.getTime() < 1000 * 60 * 60 * 7) {
 
 		}
@@ -89,7 +96,7 @@ export default new EventsBuilder()
 
 		const channel = await member.guild.channels.fetch(settings.inviteTracking?.inviteLogChannel!) as TextChannel;
 		if (channel) {
-			channel.send(`<@${member.user.id}> has joined the server! Invited by: **<@${foundInviter.id}> (${invitesNum} Invites)**`);
+			channel.send(`<@${member.user.id}> has joined the server! Invited by: **<@${foundInviter.id}> (${await getRealInvites(foundInviter.user, member.guild)} Invites)**`);
 		}
 
 

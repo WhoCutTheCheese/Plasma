@@ -141,7 +141,7 @@ export class CommandBuilder {
 	}
 
 	/** Runs the current {@link Executor}. */
-	execute(client: Client, message: Message, args: string[], guildSettings: HydratedDocument<IGuildSettings>): Promise<unknown> {
-		return promisify(this.#executor)(client, message, args, guildSettings);
+	execute(client: Client, message: Message, args: string[], guildSettings: HydratedDocument<IGuildSettings>): Promise<void> | void {
+		return this.#executor(client, message, args, guildSettings);
 	}
 }

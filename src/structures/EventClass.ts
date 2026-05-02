@@ -30,9 +30,8 @@ export class EventsBuilder {
 		return this;
 	}
 
-	execute(...args: any[]): Promise<unknown> {
-		//@ts-ignore
-		return promisify(this.#executor)(...args);
+	execute(...args: any[]): Promise<void> | void {
+		return this.#executor(...args);
 	}
 
 	event(): string {

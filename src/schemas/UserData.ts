@@ -16,7 +16,6 @@ const schema = new Schema({
 	expCap: Number,
 	expMulti: Number,
 	invites: {
-		real: Number,
 		fake: Number,
 		left: Number,
 	}

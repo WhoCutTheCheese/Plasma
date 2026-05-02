@@ -3,7 +3,7 @@
  */
 
 // IMPORTS
-import { Client, Events, GatewayIntentBits, Options, Partials, Sweepers } from "discord.js";
+import { Client, GatewayIntentBits, Options, Sweepers } from "discord.js";
 import { configVars } from "./utilities/Config";
 import { handleError } from "./utilities/HandleError";
 import mongoose from "mongoose";
